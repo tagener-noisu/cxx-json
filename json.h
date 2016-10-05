@@ -50,7 +50,7 @@ struct destroyable_vec : public std::vector<_Tp> {
 //----------------------------------------------------------------------------
 struct Value {
 	enum class Type {
-		NUMBER, STRING, OBJECT, ARRAY, BOOLEAN
+		INTEGER, REAL, STRING, OBJECT, ARRAY, BOOLEAN
 	};
 	using value_type = Type;
 
@@ -60,28 +60,49 @@ struct Value {
 
 	virtual value_type type() const =0;
 
-	virtual double& number() { throw Wrong_type {"Not a number"}; }
 	virtual bool& boolean() { throw Wrong_type {"Not a boolean"}; }
+	virtual long& integer() { throw Wrong_type {"Not an integer"}; }
+	virtual double& real() { throw Wrong_type {"Not a real number"}; }
 	virtual std::string& str() { throw Wrong_type {"Not a string"}; }
 	virtual Array& array() { throw Wrong_type {"Not an array"}; }
 	virtual Object& object() { throw Wrong_type {"Not an object"}; }
 
 	virtual ~Value() { }
 
-	static Value* make(double);
 	static Value* make(bool);
+	static Value* make(int);
+	static Value* make(long);
+	static Value* make(double);
 	static Value* make(const std::string&);
 	static Value* make(Array&&);
 	static Value* make(Object&&);
 };
 //----------------------------------------------------------------------------
-class Numeric_value : public Value {
+class Bool_value : public Value {
+	bool b;
+public:
+	Bool_value(bool nb) :b{nb} {}
+
+	value_type type() const override { return value_type::BOOLEAN; }
+	bool& boolean() override { return b; }
+};
+//----------------------------------------------------------------------------
+class Integer_value : public Value {
+	long l;
+public:
+	Integer_value(long nl) :l{nl} {}
+
+	value_type type() const override { return value_type::INTEGER; }
+	long& integer() override { return l; }
+};
+//----------------------------------------------------------------------------
+class Real_value : public Value {
 	double d;
 public:
-	Numeric_value(double nd) :d{nd} {}
+	Real_value(double nd) :d{nd} {}
 
-	value_type type() const override { return value_type::NUMBER; }
-	double& number() override { return d; }
+	value_type type() const override { return value_type::REAL; }
+	double& real() override { return d; }
 };
 //----------------------------------------------------------------------------
 class String_value : public Value {
@@ -111,15 +132,6 @@ public:
 	Array& array() override { return a; }
 };
 //----------------------------------------------------------------------------
-class Bool_value : public Value {
-	bool b;
-public:
-	Bool_value(bool nb) :b{nb} {}
-
-	value_type type() const override { return value_type::BOOLEAN; }
-	bool& boolean() override { return b; }
-};
-//----------------------------------------------------------------------------
 std::ostream& operator<<(std::ostream&, Value*);
 std::ostream& operator<<(std::ostream&, Value&);
 std::ostream& operator<<(std::ostream&, Object&);
@@ -130,6 +142,7 @@ namespace Parser {
 }
 //----------------------------------------------------------------------------
 Object parse(std::istream&);
+Object parse(std::string&&);
 Object parse(const std::string&);
 //----------------------------------------------------------------------------
 } // namespace

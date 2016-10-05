@@ -2,12 +2,20 @@
 #include "json.h"
 
 //----------------------------------------------------------------------------
-JSON::Value* JSON::Value::make(double d) {
-	return new Numeric_value {d};
-}
-//----------------------------------------------------------------------------
 JSON::Value* JSON::Value::make(bool b) {
 	return new Bool_value {b};
+}
+//----------------------------------------------------------------------------
+JSON::Value* JSON::Value::make(int i) {
+	return new Integer_value {i};
+}
+//----------------------------------------------------------------------------
+JSON::Value* JSON::Value::make(long l) {
+	return new Integer_value {l};
+}
+//----------------------------------------------------------------------------
+JSON::Value* JSON::Value::make(double d) {
+	return new Real_value {d};
 }
 //----------------------------------------------------------------------------
 JSON::Value* JSON::Value::make(const std::string& s) {
@@ -47,8 +55,10 @@ std::ostream& JSON::operator<<(std::ostream& os, Object& o) {
 }
 //----------------------------------------------------------------------------
 std::ostream& JSON::operator<<(std::ostream& os, Value& v) {
-	if (v.type() == Value::value_type::NUMBER)
-		os << v.number();
+	if (v.type() == Value::value_type::REAL)
+		os << v.real();
+	if (v.type() == Value::value_type::INTEGER)
+		os << v.integer();
 	if (v.type() == Value::value_type::BOOLEAN)
 		//os << (v.boolean() ? "true" : "false");
 		os << std::boolalpha << v.boolean();
@@ -66,6 +76,11 @@ std::ostream& JSON::operator<<(std::ostream& os, Value* v) {
 }
 //----------------------------------------------------------------------------
 JSON::Object JSON::parse(std::istream& is) {
+	return JSON::Parser::parse(is);
+}
+//----------------------------------------------------------------------------
+JSON::Object JSON::parse(std::string&& s) {
+	std::istringstream is {s};
 	return JSON::Parser::parse(is);
 }
 //----------------------------------------------------------------------------
