@@ -89,3 +89,13 @@ JSON::Object JSON::parse(const std::string& s) {
 	return JSON::Parser::parse(is);
 }
 //----------------------------------------------------------------------------
+JSON::Object JSON::Literals::operator"" _object(const char* p, size_t sz) {
+	return JSON::parse(p);
+}
+//----------------------------------------------------------------------------
+JSON::Array JSON::Literals::operator"" _array(const char* p, size_t sz) {
+	std::string s {"{\"result\":"};
+	s += p; s.push_back('}');
+	return std::move(JSON::parse(s)["result"]->array());
+}
+//----------------------------------------------------------------------------

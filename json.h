@@ -31,6 +31,7 @@ struct destroyable_map : public std::unordered_map<_K, _V> {
 		x.clear();
 	}
 
+
 	void destroy() {
 		for (auto i : *this)
 			delete i.second;
@@ -167,5 +168,11 @@ Object parse(std::istream&);
 Object parse(std::string&&);
 Object parse(const std::string&);
 //----------------------------------------------------------------------------
+namespace Literals {
+	JSON::Object operator"" _object(const char*, size_t);
+	JSON::Array operator"" _array(const char*, size_t);
+}
+//----------------------------------------------------------------------------
 } // namespace
+//----------------------------------------------------------------------------
 #endif
