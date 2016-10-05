@@ -24,13 +24,13 @@ struct destroyable_map : public std::unordered_map<_K, _V> {
 	using _Base::unordered_map;
 
 	destroyable_map() =default;
+	destroyable_map& operator=(destroyable_map&&) =default;
 
 	destroyable_map(destroyable_map&& x)
 	:_Base(std::move(x))
 	{
 		x.clear();
 	}
-
 
 	void destroy() {
 		for (auto i : *this)
@@ -51,6 +51,7 @@ struct destroyable_vec : public std::vector<_Tp> {
 	using _Base::vector;
 
 	destroyable_vec() =default;
+	destroyable_vec& operator=(destroyable_vec&&) =default;
 
 	destroyable_vec(destroyable_vec&& x)
 	:_Base(std::move(x))
