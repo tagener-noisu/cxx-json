@@ -20,7 +20,16 @@ using Array = destroyable_vec<Value*>;
 //----------------------------------------------------------------------------
 template <typename _K, typename _V>
 struct destroyable_map : public std::unordered_map<_K, _V> {
-	using std::unordered_map<_K, _V>::unordered_map;
+	using _Base = std::unordered_map<_K, _V>;
+	using _Base::unordered_map;
+
+	destroyable_map() =default;
+
+	destroyable_map(destroyable_map&& x)
+	:_Base(std::move(x))
+	{
+		x.clear();
+	}
 
 	void destroy() {
 		for (auto i : *this)
@@ -31,11 +40,22 @@ struct destroyable_map : public std::unordered_map<_K, _V> {
 	~destroyable_map() {
 		if (this->size() > 0) destroy();
 	}
+private:
+	destroyable_map(const destroyable_map&) =default;
 };
 //----------------------------------------------------------------------------
 template <typename _Tp>
 struct destroyable_vec : public std::vector<_Tp> {
-	using std::vector<_Tp>::vector;
+	using _Base = std::vector<_Tp>;
+	using _Base::vector;
+
+	destroyable_vec() =default;
+
+	destroyable_vec(destroyable_vec&& x)
+	:_Base(std::move(x))
+	{
+		x.clear();
+	}
 
 	void destroy() {
 		for (auto i : *this)
@@ -46,6 +66,8 @@ struct destroyable_vec : public std::vector<_Tp> {
 	~destroyable_vec() {
 		if (this->size() > 0) destroy();
 	}
+private:
+	destroyable_vec(const destroyable_vec&) =default;
 };
 //----------------------------------------------------------------------------
 struct Value {

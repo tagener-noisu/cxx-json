@@ -53,14 +53,10 @@ JSON::Object JSON::Parser::_parse_object(Token_stream& ts) {
 				res[key] = JSON::Value::make(
 					bool(tok.number()));
 			else if (tok.kind() == OB) {
-				auto o {_parse_object(ts)};
-				res[key] = JSON::Value::make(std::move(o));
-				o.clear();
+				res[key] = JSON::Value::make(_parse_object(ts));
 			}
 			else if (tok.kind() == AB) {
-				auto a {_parse_array(ts)};
-				res[key] = JSON::Value::make(std::move(a));
-				a.clear();
+				res[key] = JSON::Value::make(_parse_array(ts));
 			}
 			else throw Unexpected_token {ts.tail()};
 
