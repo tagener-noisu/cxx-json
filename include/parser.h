@@ -46,7 +46,7 @@ public:
 	inline Token_kind kind() const { return k; }
 };
 //----------------------------------------------------------------------------
-class Token_stream {
+class Token_stream  {
 	std::istream& is;
 	Token curr_tok;
 	char* line;
@@ -103,7 +103,9 @@ public:
 				std::string s;
 				while (!is.eof()) {
 					if (isalpha(c)) s.push_back(c);
-					else throw Unexpected_token {};
+					else {
+						throw Unexpected_token {tail()};
+					}
 
 					if (s.size() == 4 && s == "true") {
 						curr_tok = {BOOL, true};
@@ -154,7 +156,7 @@ public:
 			default:
 				is.putback(c);
 				curr_tok = {UNEXPECTED};
-				return curr_tok;
+			return curr_tok;
 		}
 	}
 };

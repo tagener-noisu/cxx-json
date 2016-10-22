@@ -21,16 +21,11 @@ using Array = destroyable_vec<Value*>;
 template <typename _K, typename _V>
 struct destroyable_map : public std::unordered_map<_K, _V> {
 	using _Base = std::unordered_map<_K, _V>;
-	using _Base::unordered_map;
 
 	destroyable_map() =default;
-	destroyable_map& operator=(destroyable_map&&) =default;
+	destroyable_map(destroyable_map&&) =default;
 
-	destroyable_map(destroyable_map&& x)
-	:_Base(std::move(x))
-	{
-		x.clear();
-	}
+	destroyable_map& operator=(destroyable_map&&) =default;
 
 	void destroy() {
 		for (auto i : *this)
@@ -42,22 +37,17 @@ struct destroyable_map : public std::unordered_map<_K, _V> {
 		if (this->size() > 0) destroy();
 	}
 private:
-	destroyable_map(const destroyable_map&) =default;
+	destroyable_map(const destroyable_map&);
 };
 //----------------------------------------------------------------------------
 template <typename _Tp>
 struct destroyable_vec : public std::vector<_Tp> {
 	using _Base = std::vector<_Tp>;
-	using _Base::vector;
 
 	destroyable_vec() =default;
-	destroyable_vec& operator=(destroyable_vec&&) =default;
+	destroyable_vec(destroyable_vec&&) =default;
 
-	destroyable_vec(destroyable_vec&& x)
-	:_Base(std::move(x))
-	{
-		x.clear();
-	}
+	destroyable_vec& operator=(destroyable_vec&&) =default;
 
 	void destroy() {
 		for (auto i : *this)
@@ -69,7 +59,7 @@ struct destroyable_vec : public std::vector<_Tp> {
 		if (this->size() > 0) destroy();
 	}
 private:
-	destroyable_vec(const destroyable_vec&) =default;
+	destroyable_vec(const destroyable_vec&);
 };
 //----------------------------------------------------------------------------
 struct Value {
@@ -85,8 +75,7 @@ struct Value {
 	virtual value_type type() const =0;
 
 	virtual bool& boolean() { throw Wrong_type {"Not a boolean"}; }
-	virtual long& integer() { throw Wrong_type {"Not an integer"}; }
-	virtual double& real() { throw Wrong_type {"Not a real number"}; }
+	virtual double& real() { throw Wrong_type {"Not a number"}; }
 	virtual std::string& str() { throw Wrong_type {"Not a string"}; }
 	virtual Array& array() { throw Wrong_type {"Not an array"}; }
 	virtual Object& object() { throw Wrong_type {"Not an object"}; }
@@ -95,9 +84,8 @@ struct Value {
 
 	static Value* make(bool);
 	static Value* make(int);
-	static Value* make(long);
 	static Value* make(double);
-	static Value* make(const std::string&);
+	static Value* make(std::string);
 	static Value* make(Array&&);
 	static Value* make(Object&&);
 };
@@ -109,15 +97,6 @@ public:
 
 	value_type type() const override { return value_type::BOOLEAN; }
 	bool& boolean() override { return b; }
-};
-//----------------------------------------------------------------------------
-class Integer_value : public Value {
-	long l;
-public:
-	Integer_value(long nl) :l{nl} {}
-
-	value_type type() const override { return value_type::INTEGER; }
-	long& integer() override { return l; }
 };
 //----------------------------------------------------------------------------
 class Real_value : public Value {
