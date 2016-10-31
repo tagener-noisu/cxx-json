@@ -118,13 +118,11 @@ Array Parser::_parse_array(TokenStream& ts) {
 		if (tok.kind() == STRING)
 			res.push_back(Value::make(tok.str()));
 		else if (tok.kind() == NUMBER)
-			res.push_back(Value::make(
-				tok.number()));
+			res.push_back(Value::make(tok.number()));
 		else if (tok.kind() == NIL)
 			res.push_back(Value::make_null());
 		else if (tok.kind() == BOOL)
-			res.push_back(Value::make(
-				bool(tok.number())));
+			res.push_back(Value::make(bool(tok.number())));
 		else if (tok.kind() == AB) {
 			auto a {_parse_array(ts)};
 			res.push_back(Value::make(std::move(a)));
@@ -156,16 +154,14 @@ Object Parser::_parse_object(TokenStream& ts) {
 
 			auto tok = ts.get();
 			if (tok.kind() == STRING)
-				res[key] = Value::make(
-					tok.str());
+				res[key] = JSON::Value::make(tok.str());
 			else if (tok.kind() == NUMBER)
-				res[key] = Value::make(
-					tok.number());
+				res[key] = JSON::Value::make(tok.number());
+			else if (tok.kind() == BOOL)
+				res[key] = JSON::Value::make(
+					bool(tok.number()));
 			else if (tok.kind() == NIL)
 				res[key] = Value::make_null();
-			else if (tok.kind() == BOOL)
-				res[key] = Value::make(
-					bool(tok.number()));
 			else if (tok.kind() == OB) {
 				res[key] = Value::make(_parse_object(ts));
 			}
