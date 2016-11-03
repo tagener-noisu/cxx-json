@@ -2,7 +2,7 @@
 
 using namespace JSON;
 //----------------------------------------------------------------------------
-Parser::Token Parser::Token_stream::get() {
+Parser::Token Parser::TokenStream::get() {
 	char c;
 	c = is.get();
 	if (is.eof()) return Token {EOS};
@@ -13,7 +13,7 @@ Parser::Token Parser::Token_stream::get() {
 		case AE:
 		case ASSIGN:
 		case DELIM:
-			curr_tok = {static_cast<Token_kind>(c)};
+			curr_tok = {static_cast<TokenKind>(c)};
 			return curr_tok;
 		case ' ':
 		case '\n':
@@ -88,7 +88,7 @@ Parser::Token Parser::Token_stream::get() {
 	}
 }
 //----------------------------------------------------------------------------
-char const* Parser::Token_stream::tail() {
+char const* Parser::TokenStream::tail() {
 	is.unget();
 	if (!line) line = new char[22];
 	raw_read(line+1, 20);
@@ -99,14 +99,14 @@ char const* Parser::Token_stream::tail() {
 	return line;
 }
 //----------------------------------------------------------------------------
-void Parser::Token_stream::raw_read(char* p, int n) {
+void Parser::TokenStream::raw_read(char* p, int n) {
 	is.read(p, n);
 	int i = n;
 	while (i-- != 0)
 		is.putback(p[i]);
 }
 //----------------------------------------------------------------------------
-Array Parser::_parse_array(Token_stream& ts) {
+Array Parser::_parse_array(TokenStream& ts) {
 	Array res;
 	while (ts.get().kind() != EOS) {
 		auto tok = ts.current();
@@ -138,7 +138,7 @@ Array Parser::_parse_array(Token_stream& ts) {
 	throw Unexpected_eos {};
 }
 //----------------------------------------------------------------------------
-Object Parser::_parse_object(Token_stream& ts) {
+Object Parser::_parse_object(TokenStream& ts) {
 	Object res;
 	while (ts.get().kind() != EOS) {
 		if (ts.current().kind() == STRING) {
@@ -176,7 +176,7 @@ Object Parser::_parse_object(Token_stream& ts) {
 }
 //----------------------------------------------------------------------------
 Object Parser::parse(std::istream& is) {
-	Token_stream ts {is};
+	TokenStream ts {is};
 	if (ts.get().kind() == EOS) throw Unexpected_eos {"Stream is empty"};
 	if (ts.current().kind() != OB) throw Unexpected_token {"Expected '{'"};
 	Object res = _parse_object(ts);

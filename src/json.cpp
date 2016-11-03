@@ -3,7 +3,7 @@
 
 //----------------------------------------------------------------------------
 JSON::Value* JSON::Value::make(bool b) {
-	return new Bool_value {b};
+	return new BoolValue {b};
 }
 //----------------------------------------------------------------------------
 JSON::Value* JSON::Value::make(int l) {
@@ -11,19 +11,19 @@ JSON::Value* JSON::Value::make(int l) {
 }
 //----------------------------------------------------------------------------
 JSON::Value* JSON::Value::make(double d) {
-	return new Real_value {d};
+	return new RealValue {d};
 }
 //----------------------------------------------------------------------------
 JSON::Value* JSON::Value::make(const std::string s) {
-	return new String_value {s};
+	return new StringValue {s};
 }
 //----------------------------------------------------------------------------
 JSON::Value* JSON::Value::make(Array&& a) {
-	return new Array_value {std::forward<Array>(a)};
+	return new ArrayValue {std::forward<Array>(a)};
 }
 //----------------------------------------------------------------------------
 JSON::Value* JSON::Value::make(Object&& o) {
-	return new Object_value {std::forward<Object>(o)};
+	return new ObjectValue {std::forward<Object>(o)};
 }
 //----------------------------------------------------------------------------
 std::ostream& JSON::operator<<(std::ostream& os, Array& a) {
