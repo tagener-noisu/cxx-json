@@ -10,22 +10,23 @@ namespace JSON {
 struct Value;
 
 template<typename _K, typename _V>
-struct destroyable_map;
+struct DestroyableMap;
 
 template<typename _Tp>
-struct destroyable_vec;
+struct DestroyableVector;
 
-using Object = destroyable_map<std::string, Value*>;
-using Array = destroyable_vec<Value*>;
+using Object = DestroyableMap<std::string, Value*>;
+using Array = DestroyableVector<Value*>;
 //----------------------------------------------------------------------------
 template <typename _K, typename _V>
-struct destroyable_map : public std::unordered_map<_K, _V> {
+class DestroyableMap : public std::unordered_map<_K, _V> {
+public:
 	using _Base = std::unordered_map<_K, _V>;
 
-	destroyable_map() =default;
-	destroyable_map(destroyable_map&&) =default;
+	DestroyableMap() =default;
+	DestroyableMap(DestroyableMap&&) =default;
 
-	destroyable_map& operator=(destroyable_map&&) =default;
+	DestroyableMap& operator=(DestroyableMap&&) =default;
 
 	void destroy() {
 		for (auto i : *this)
@@ -33,21 +34,22 @@ struct destroyable_map : public std::unordered_map<_K, _V> {
 		this->clear();
 	}
 
-	~destroyable_map() {
+	~DestroyableMap() {
 		if (this->size() > 0) destroy();
 	}
 private:
-	destroyable_map(const destroyable_map&);
+	DestroyableMap(const DestroyableMap&);
 };
 //----------------------------------------------------------------------------
 template <typename _Tp>
-struct destroyable_vec : public std::vector<_Tp> {
+class DestroyableVector : public std::vector<_Tp> {
+public:
 	using _Base = std::vector<_Tp>;
 
-	destroyable_vec() =default;
-	destroyable_vec(destroyable_vec&&) =default;
+	DestroyableVector() =default;
+	DestroyableVector(DestroyableVector&&) =default;
 
-	destroyable_vec& operator=(destroyable_vec&&) =default;
+	DestroyableVector& operator=(DestroyableVector&&) =default;
 
 	void destroy() {
 		for (auto i : *this)
@@ -55,11 +57,11 @@ struct destroyable_vec : public std::vector<_Tp> {
 		this->clear();
 	}
 
-	~destroyable_vec() {
+	~DestroyableVector() {
 		if (this->size() > 0) destroy();
 	}
 private:
-	destroyable_vec(const destroyable_vec&);
+	DestroyableVector(const DestroyableVector&);
 };
 //----------------------------------------------------------------------------
 struct Value {
@@ -90,46 +92,46 @@ struct Value {
 	static Value* make(Object&&);
 };
 //----------------------------------------------------------------------------
-class Bool_value : public Value {
+class BoolValue : public Value {
 	bool b;
 public:
-	Bool_value(bool nb) :b{nb} {}
+	BoolValue(bool nb) :b{nb} {}
 
 	value_type type() const override { return value_type::BOOLEAN; }
 	bool& boolean() override { return b; }
 };
 //----------------------------------------------------------------------------
-class Real_value : public Value {
+class RealValue : public Value {
 	double d;
 public:
-	Real_value(double nd) :d{nd} {}
+	RealValue(double nd) :d{nd} {}
 
 	value_type type() const override { return value_type::REAL; }
 	double& real() override { return d; }
 };
 //----------------------------------------------------------------------------
-class String_value : public Value {
+class StringValue : public Value {
 	std::string s;
 public:
-	String_value(const std::string& ns) :s{ns} {}
+	StringValue(const std::string& ns) :s{ns} {}
 
 	value_type type() const override { return value_type::STRING; }
 	std::string& str() override { return s; }
 };
 //----------------------------------------------------------------------------
-class Object_value : public Value {
+class ObjectValue : public Value {
 	Object o;
 public:
-	Object_value(Object&& no) :o{std::move(no)} {}
+	ObjectValue(Object&& no) :o{std::move(no)} {}
 
 	value_type type() const override { return value_type::OBJECT; }
 	Object& object() override { return o; }
 };
 //----------------------------------------------------------------------------
-class Array_value : public Value {
+class ArrayValue : public Value {
 	Array a;
 public:
-	Array_value(Array&& na) :a{std::forward<Array>(na)} {}
+	ArrayValue(Array&& na) :a{std::forward<Array>(na)} {}
 
 	value_type type() const override { return value_type::ARRAY; }
 	Array& array() override { return a; }

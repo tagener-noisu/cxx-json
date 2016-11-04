@@ -25,35 +25,35 @@ struct Unexpected_token : public Error {
 	Unexpected_token(const char* s) :Error{s} {}
 };
 //----------------------------------------------------------------------------
-enum Token_kind {
+enum TokenKind {
 	OB='{', OE='}', AB='[', AE=']',
 	STRING='S', NUMBER='N', BOOL='B', EOS='\0',
         QUOT='"', ASSIGN=':', DELIM=',', UNEXPECTED='?'
 };
 //----------------------------------------------------------------------------
 class Token {
-	Token_kind k;
+	TokenKind k;
 	std::string s;
 	double d;
 public:
-	Token(Token_kind nk =EOS) :k{nk} {}
-	Token(Token_kind nk, double nd) :k{nk}, d{nd} {}
-	Token(Token_kind nk, std::string ns) :k{nk}, s{ns} {}
+	Token(TokenKind nk =EOS) :k{nk} {}
+	Token(TokenKind nk, double nd) :k{nk}, d{nd} {}
+	Token(TokenKind nk, std::string ns) :k{nk}, s{ns} {}
 
 	inline std::string str() const { return s; }
 	inline double number() const { return d; }
 
-	inline Token_kind kind() const { return k; }
+	inline TokenKind kind() const { return k; }
 };
 //----------------------------------------------------------------------------
-class Token_stream  {
+class TokenStream  {
 	std::istream& is;
 	Token curr_tok;
 	char* line;
 
 public:
-	Token_stream(std::istream& s) :is{s}, line{nullptr} {}
-	~Token_stream() { if(line) delete[] line; };
+	TokenStream(std::istream& s) :is{s}, line{nullptr} {}
+	~TokenStream() { if(line) delete[] line; };
 
 	inline Token current() const { return curr_tok; }
 
@@ -62,8 +62,8 @@ public:
 	Token get();
 };
 //----------------------------------------------------------------------------
-JSON::Array _parse_array(Token_stream&);
-JSON::Object _parse_object(Token_stream&);
+JSON::Array _parse_array(TokenStream&);
+JSON::Object _parse_object(TokenStream&);
 
 JSON::Object parse(std::istream&);
 JSON::Object parse(const std::string&);
