@@ -9,7 +9,7 @@ namespace JSON {
 namespace Parser {
 //----------------------------------------------------------------------------
 enum TokenKind {
-	OB='{', OE='}', AB='[', AE=']',
+	OB='{', OE='}', AB='[', AE=']', NIL,
 	STRING='S', NUMBER='N', BOOL='B', EOS='\0',
         QUOT='"', ASSIGN=':', DELIM=',', UNEXPECTED='?'
 };

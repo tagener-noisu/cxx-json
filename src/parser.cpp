@@ -27,6 +27,7 @@ Parser::Token Parser::TokenStream::get() {
 
 		case 't':
 		case 'f':
+		case 'n':
 		{
 			std::string s;
 			while (!is.eof()) {
@@ -37,6 +38,10 @@ Parser::Token Parser::TokenStream::get() {
 
 				if (s.size() == 4 && s == "true") {
 					curr_tok = {BOOL, true};
+					return curr_tok;
+				}
+				else if (s.size() == 4 && s == "null") {
+					curr_tok = {NIL};
 					return curr_tok;
 				}
 				else if (s.size() == 5 &&
@@ -115,6 +120,8 @@ Array Parser::_parse_array(TokenStream& ts) {
 		else if (tok.kind() == NUMBER)
 			res.push_back(Value::make(
 				tok.number()));
+		else if (tok.kind() == NIL)
+			res.push_back(Value::make_null());
 		else if (tok.kind() == BOOL)
 			res.push_back(Value::make(
 				bool(tok.number())));
@@ -154,6 +161,8 @@ Object Parser::_parse_object(TokenStream& ts) {
 			else if (tok.kind() == NUMBER)
 				res[key] = Value::make(
 					tok.number());
+			else if (tok.kind() == NIL)
+				res[key] = Value::make_null();
 			else if (tok.kind() == BOOL)
 				res[key] = Value::make(
 					bool(tok.number()));

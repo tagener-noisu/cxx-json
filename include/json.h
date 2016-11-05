@@ -66,7 +66,7 @@ private:
 //----------------------------------------------------------------------------
 struct Value {
 	enum class Type {
-		NUMBER, STRING, OBJECT, ARRAY, BOOLEAN
+		NUMBER, STRING, OBJECT, ARRAY, BOOLEAN, NIL
 	};
 	using value_type = Type;
 
@@ -81,6 +81,10 @@ struct Value {
 	virtual std::string& str() { throw Wrong_type {"Not a string"}; }
 	virtual Array& array() { throw Wrong_type {"Not an array"}; }
 	virtual Object& object() { throw Wrong_type {"Not an object"}; }
+	virtual void* nil() { throw Wrong_type {"Not a null value"}; }
+
+	virtual Value* operator[](size_t x) {
+		throw Wrong_type {"Subscripting not supported"};}
 
 	virtual ~Value() { }
 
@@ -90,6 +94,15 @@ struct Value {
 	static Value* make(std::string);
 	static Value* make(Array&&);
 	static Value* make(Object&&);
+	static Value* make_null();
+};
+//----------------------------------------------------------------------------
+class NullValue : public Value {
+public:
+	NullValue() {}
+
+	value_type type() const override { return value_type::NIL; }
+	void* nil() override { return nullptr; }
 };
 //----------------------------------------------------------------------------
 class BoolValue : public Value {
@@ -132,6 +145,8 @@ class ArrayValue : public Value {
 	Array a;
 public:
 	ArrayValue(Array&& na) :a{std::forward<Array>(na)} {}
+
+	Value* operator[](size_t x) override { return a[x]; }
 
 	value_type type() const override { return value_type::ARRAY; }
 	Array& array() override { return a; }

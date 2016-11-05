@@ -2,6 +2,10 @@
 #include "json.h"
 
 //----------------------------------------------------------------------------
+JSON::Value* JSON::Value::make_null() {
+	return new NullValue {};
+}
+//----------------------------------------------------------------------------
 JSON::Value* JSON::Value::make(bool b) {
 	return new BoolValue {b};
 }
@@ -51,6 +55,8 @@ std::ostream& JSON::operator<<(std::ostream& os, Object& o) {
 }
 //----------------------------------------------------------------------------
 std::ostream& JSON::operator<<(std::ostream& os, Value& v) {
+	if (v.type() == Value::value_type::NIL)
+		os << "null";
 	if (v.type() == Value::value_type::NUMBER)
 		os << v.number();
 	if (v.type() == Value::value_type::BOOLEAN)
