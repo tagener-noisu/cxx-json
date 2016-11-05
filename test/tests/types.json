@@ -1,0 +1,26 @@
+{
+
+"label": "Type tests",
+
+"content": {
+
+	"numbers": {
+		"integer": 1337,
+		"real": 3.14
+	},
+
+	"boolean": {
+		"true": true,
+		"false": false
+	},
+
+	"null": null,
+
+	"string": "This is a string",
+
+	"array": [1, 2, 3],
+
+	"object": {}
+}
+
+}
