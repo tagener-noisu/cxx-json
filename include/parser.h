@@ -8,23 +8,6 @@
 namespace JSON {
 namespace Parser {
 //----------------------------------------------------------------------------
-struct Error : public std::runtime_error {
-	Error() :runtime_error{""} {}
-	Error(const char* s) :runtime_error{s} {}
-};
-
-struct Unterminated_string : public Error {};
-
-struct Unexpected_eos : public Error {
-	Unexpected_eos() =default;
-	Unexpected_eos(const char* s) :Error{s} {}
-};
-
-struct Unexpected_token : public Error {
-	Unexpected_token() =default;
-	Unexpected_token(const char* s) :Error{s} {}
-};
-//----------------------------------------------------------------------------
 enum TokenKind {
 	OB='{', OE='}', AB='[', AE=']',
 	STRING='S', NUMBER='N', BOOL='B', EOS='\0',

@@ -143,7 +143,24 @@ std::ostream& operator<<(std::ostream&, Object&);
 std::ostream& operator<<(std::ostream&, Array&);
 //----------------------------------------------------------------------------
 namespace Parser {
-	Object parse(std::istream&);
+Object parse(std::istream&);
+//----------------------------------------------------------------------------
+struct Error : public std::runtime_error {
+	Error() :runtime_error{""} {}
+	Error(const char* s) :runtime_error{s} {}
+};
+
+struct Unterminated_string : public Error {};
+
+struct Unexpected_eos : public Error {
+	Unexpected_eos() =default;
+	Unexpected_eos(const char* s) :Error{s} {}
+};
+
+struct Unexpected_token : public Error {
+	Unexpected_token() =default;
+	Unexpected_token(const char* s) :Error{s} {}
+};
 }
 //----------------------------------------------------------------------------
 Object parse(std::istream&);
