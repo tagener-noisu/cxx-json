@@ -11,7 +11,7 @@ JSON::Value* JSON::Value::make(int l) {
 }
 //----------------------------------------------------------------------------
 JSON::Value* JSON::Value::make(double d) {
-	return new RealValue {d};
+	return new NumberValue {d};
 }
 //----------------------------------------------------------------------------
 JSON::Value* JSON::Value::make(const std::string s) {
@@ -51,10 +51,9 @@ std::ostream& JSON::operator<<(std::ostream& os, Object& o) {
 }
 //----------------------------------------------------------------------------
 std::ostream& JSON::operator<<(std::ostream& os, Value& v) {
-	if (v.type() == Value::value_type::REAL)
-		os << v.real();
+	if (v.type() == Value::value_type::NUMBER)
+		os << v.number();
 	if (v.type() == Value::value_type::BOOLEAN)
-		//os << (v.boolean() ? "true" : "false");
 		os << std::boolalpha << v.boolean();
 	else if (v.type() == Value::value_type::STRING)
 		os << '"' << v.str() << '"';

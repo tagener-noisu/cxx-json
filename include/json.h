@@ -66,7 +66,7 @@ private:
 //----------------------------------------------------------------------------
 struct Value {
 	enum class Type {
-		INTEGER, REAL, STRING, OBJECT, ARRAY, BOOLEAN
+		NUMBER, STRING, OBJECT, ARRAY, BOOLEAN
 	};
 	using value_type = Type;
 
@@ -77,7 +77,7 @@ struct Value {
 	virtual value_type type() const =0;
 
 	virtual bool& boolean() { throw Wrong_type {"Not a boolean"}; }
-	virtual double& real() { throw Wrong_type {"Not a number"}; }
+	virtual double& number() { throw Wrong_type {"Not a number"}; }
 	virtual std::string& str() { throw Wrong_type {"Not a string"}; }
 	virtual Array& array() { throw Wrong_type {"Not an array"}; }
 	virtual Object& object() { throw Wrong_type {"Not an object"}; }
@@ -101,13 +101,13 @@ public:
 	bool& boolean() override { return b; }
 };
 //----------------------------------------------------------------------------
-class RealValue : public Value {
+class NumberValue : public Value {
 	double d;
 public:
-	RealValue(double nd) :d{nd} {}
+	NumberValue(double nd) :d{nd} {}
 
-	value_type type() const override { return value_type::REAL; }
-	double& real() override { return d; }
+	value_type type() const override { return value_type::NUMBER; }
+	double& number() override { return d; }
 };
 //----------------------------------------------------------------------------
 class StringValue : public Value {
