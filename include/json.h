@@ -91,7 +91,8 @@ struct Value {
 	static Value* make(bool);
 	static Value* make(int);
 	static Value* make(double);
-	static Value* make(std::string);
+	static Value* make(const std::string&);
+	static Value* make(std::string&&);
 	static Value* make(Array&&);
 	static Value* make(Object&&);
 	static Value* make_null();

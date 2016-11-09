@@ -18,16 +18,20 @@ JSON::Value* JSON::Value::make(double d) {
 	return new NumberValue {d};
 }
 //----------------------------------------------------------------------------
-JSON::Value* JSON::Value::make(const std::string s) {
+JSON::Value* JSON::Value::make(const std::string& s) {
 	return new StringValue {s};
 }
 //----------------------------------------------------------------------------
+JSON::Value* JSON::Value::make(std::string&& s) {
+	return new StringValue {std::move(s)};
+}
+//----------------------------------------------------------------------------
 JSON::Value* JSON::Value::make(Array&& a) {
-	return new ArrayValue {std::forward<Array>(a)};
+	return new ArrayValue {std::move(a)};
 }
 //----------------------------------------------------------------------------
 JSON::Value* JSON::Value::make(Object&& o) {
-	return new ObjectValue {std::forward<Object>(o)};
+	return new ObjectValue {std::move(o)};
 }
 //----------------------------------------------------------------------------
 std::ostream& JSON::operator<<(std::ostream& os, Array& a) {
