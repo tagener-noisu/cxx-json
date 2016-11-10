@@ -26,6 +26,10 @@ JSON::Value* JSON::Value::make(std::string&& s) {
 	return new StringValue {std::move(s)};
 }
 //----------------------------------------------------------------------------
+JSON::Value* JSON::Value::make(const char* s) {
+	return new StringValue {s};
+}
+//----------------------------------------------------------------------------
 JSON::Value* JSON::Value::make(Array&& a) {
 	return new ArrayValue {std::move(a)};
 }
